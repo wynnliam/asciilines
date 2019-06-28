@@ -1,0 +1,18 @@
+#!/bin/bash
+
+diff <(./bin/asciilines ./tests/supplied_tests/1/test1.svg) ./tests/supplied_tests/1/test1.out
+# The return code of the previous arg is $? For readability
+# we put this in a variable result
+result=$?
+
+if [ $result -eq 0 ]
+then
+	echo 'Test was a success!'
+else
+	if [ $result -eq 1 ]
+	then
+		echo 'Test failed! Expected output did not match program output'
+	else
+		echo 'Test failed! Bash file broke somewhere'
+	fi
+fi
