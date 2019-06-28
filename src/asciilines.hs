@@ -3,6 +3,9 @@ import System.IO
 import System.Exit
 import Data.String
 
+data CanvasRow = CanvasRow [Integer]
+data Canvas = Canvas Integer Integer [CanvasRow]
+
 -- For now, we shall only handle the case of empty argument list.
 main = getArgs >>= parseArgs
 
@@ -20,9 +23,6 @@ parseArgs [file] = renderCanvas (verifyFileName file) >> exitSuccess
 
 printUsage = putStrLn "No files given. Please run as ./asciilines file.tvg"
 
-renderCanvas Nothing     = putStrLn "The file you supplied is not a tvg file. Please update the extension to be one."
-renderCanvas (Just file) = (readFile file) >>= putStr
-
 -- Returns Just fileName if the file has a .tvg extension.
 -- Otherwise will return Nothing.
 verifyFileName :: String -> Maybe String
@@ -33,3 +33,6 @@ verifyFileName file
     | (drop ((length file) - 3) file) == "tvg" = Just file
     -- Otherwise we return nothing.
     | otherwise = Nothing
+
+renderCanvas Nothing     = putStrLn "The file you supplied is not a tvg file. Please update the extension to be one."
+renderCanvas (Just file) = (readFile file) >>= putStr
