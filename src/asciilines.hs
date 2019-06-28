@@ -16,23 +16,20 @@ parseArgs :: [String] -> IO a
 -- exitSuccess is independent of printUsage, we ignore printUsage's result (which
 -- is () because printUsage prints to standard IO and quits).
 parseArgs []  = printUsage >> exitSuccess
-parseArgs [file] = putStrLn (loadFileContents file) >> exitSuccess
--- TODO: Handle case of non-empty argument list
+parseArgs [file] = renderCanvas (verifyFileName file) >> exitSuccess
 
 printUsage = putStrLn "No files given. Please run as ./asciilines file.tvg"
 
-loadFileContents :: String -> String
-loadFileContents file
-    | (verifyFileName file) == Nothing =  "The file you supplied is not a tvg file. Please update the extension to be one."
-    | otherwise = file
+renderCanvas Nothing     = putStrLn "The file you supplied is not a tvg file. Please update the extension to be one."
+renderCanvas (Just file) = (readFile file) >>= putStr
 
 -- Returns Just fileName if the file has a .tvg extension.
 -- Otherwise will return Nothing.
 verifyFileName :: String -> Maybe String
 verifyFileName file
-    | (length file) < 4 = Nothing
-    | (drop ((length file) - 3) file) == "tvg" = Just file
-    | otherwise = Nothing
     -- Name has to be at least ".tvg". If not then return Nothing.
+    | (length file) < 4 = Nothing
     -- If the last three characters of the string are tvg, then we can read this.
+    | (drop ((length file) - 3) file) == "tvg" = Just file
     -- Otherwise we return nothing.
+    | otherwise = Nothing
