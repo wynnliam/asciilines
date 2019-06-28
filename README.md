@@ -14,17 +14,22 @@ make all
 ```
 
 ## Running asciilines
-This will compile the source code under `src/`. Provided there are no errors, you should be able
-to run the following:
+To run asciilines, navigate to the `bin/` folder and run `./asciilines FILE_NAME.tvg`. There
+are several files in the `tests/` folder which have .tvg files for you to use.
 
-```
-make run
-```
+### Running tests
+There are several tests one can run. To do so, from the root of the project, run the command:
+`./bin/tests/path/to/test/run.out`. Provided the test is functional, it will print out whether
+the test works or not. If it failed, it will tell you that either the program is not working
+as intended, or the test script itself failed.
 
-And the application will run.
 
 # Issue Summary
-- This application currently doesn't do anything. All it does is print "Hello"
+- The application will fail if the user supplies a file or several. Should the user supply
+no files, the application will work as intended as it prints a message saying how to run.
+- Running the command `make run` does not work.
+- No unit tests for the tests under `tests/supplied_tests`. It only has input files and expected
+output.
 
 # License
 This program is licensed uder the "MIT License". Please see the `LICENSE` in the source distribution
