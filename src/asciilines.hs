@@ -16,10 +16,15 @@ parseArgs :: [String] -> IO a
 -- exitSuccess is independent of printUsage, we ignore printUsage's result (which
 -- is () because printUsage prints to standard IO and quits).
 parseArgs []  = printUsage >> exitSuccess
-parseArgs [file] = putStrLn (show (verifyFileName file)) >> exitSuccess
+parseArgs [file] = putStrLn (loadFileContents file) >> exitSuccess
 -- TODO: Handle case of non-empty argument list
 
 printUsage = putStrLn "No files given. Please run as ./asciilines file.tvg"
+
+loadFileContents :: String -> String
+loadFileContents file
+    | (verifyFileName file) == Nothing =  "The file you supplied is not a tvg file. Please update the extension to be one."
+    | otherwise = file
 
 -- Returns Just fileName if the file has a .tvg extension.
 -- Otherwise will return Nothing.
