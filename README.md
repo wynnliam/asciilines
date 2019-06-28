@@ -28,8 +28,6 @@ as intended, or the test script itself failed.
 - The application will fail if the user supplies a file or several. Should the user supply
 no files, the application will work as intended as it prints a message saying how to run.
 - Running the command `make run` does not work.
-- No unit tests for the tests under `tests/supplied_tests`. It only has input files and expected
-output.
 
 # License
 This program is licensed uder the "MIT License". Please see the `LICENSE` in the source distribution
