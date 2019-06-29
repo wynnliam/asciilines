@@ -38,11 +38,15 @@ verifyFileName file
 
 -- TODO: Hammer this out some more
 renderCanvasFromFile Nothing     = putStrLn "The file you supplied is not a tvg file. Please update the extension to be one."
-renderCanvasFromFile (Just file) = (fmap show (loadTvgContents file)) >>= putStrLn
+renderCanvasFromFile (Just file) = (loadTvgContents file) >>= parseTvgContents
 
 -- Returns every line of the TVG file in a list
 loadTvgContents :: String -> IO [String]
 loadTvgContents file = fmap lines (readFile file)
 
-parseTvgInput :: String -> [String]
-parseTvgInput rawFileInput = lines rawFileInput
+parseTvgContents [] = putStrLn "Empty file!"
+parseTvgContents (canvasDimStr : commands)
+    | validCanvasDimStr canvasDimStr == False = putStrLn "Bad canvas arguments. The format is \"A B\" where A and B are non-zero integers."
+    | otherwise = putStrLn "Have sex"
+
+validCanvasDimStr _ = False
