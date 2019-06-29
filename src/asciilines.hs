@@ -35,7 +35,6 @@ verifyFileName file
     -- Otherwise we return nothing.
     | otherwise = Nothing
 
-
 -- TODO: Hammer this out some more
 renderCanvasFromFile Nothing     = putStrLn "The file you supplied is not a tvg file. Please update the extension to be one."
 renderCanvasFromFile (Just file) = (loadTvgContents file) >>= parseTvgContents
@@ -46,7 +45,8 @@ loadTvgContents file = fmap lines (readFile file)
 
 parseTvgContents [] = putStrLn "Empty file!"
 parseTvgContents (canvasDimStr : commands)
-    | validCanvasDimStr canvasDimStr == False = putStrLn "Bad canvas arguments. The format is \"A B\" where A and B are non-zero integers."
+    | validCanvasDimStr (words canvasDimStr) == False = putStrLn "Bad canvas arguments. The format is \"A B\" where A and B are non-zero integers."
     | otherwise = putStrLn "Have sex"
 
+validCanvasDimStr [a, b] = True
 validCanvasDimStr _ = False
