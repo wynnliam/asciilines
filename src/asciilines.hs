@@ -48,11 +48,14 @@ renderCanvasFromFile (Just file)     = putStrLn "File"
 getTvgCommands file = fmap lines (readFile file)
 
 parseTvgContents :: [String] -> TvgData
-parseTvgContents (x : xs) = TvgData (buildCanvasDims x) []
+parseTvgContents (x : xs) = TvgData (buildCanvasDims x) (parseTvgCommands xs)
 
 buildCanvasDims :: String -> CanvasDim
 buildCanvasDims line = CanvasDim (head nums) ((head . tail) nums)
     where nums = map (read::String->Integer) (words line)
+
+parseTvgCommands :: [String] -> [Command]
+parseTvgCommands commandStrs = map ((read::String->Command).convertCommandToReadable) commandStrs
 
 -- Converts a line that looks like "symbol num num h/v num" to
 -- "Command 'symbol' num num (Line Horizontal/Vertical num)"
