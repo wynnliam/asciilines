@@ -45,7 +45,7 @@ renderCanvasFromFile Nothing         = putStrLn "The file you supplied is not a 
 --renderCanvasFromFile (Just file)     = (getTvgCommands file) >>= tempPrint
 renderCanvasFromFile (Just file)     = putStrLn "File"
 
-getTvgCommands file = fmap lines (readFile file)
+getTvgCommands file = fmap parseTvgContents (fmap lines (readFile file))
 
 parseTvgContents :: [String] -> TvgData
 parseTvgContents (x : xs) = TvgData (buildCanvasDims x) (parseTvgCommands xs)
