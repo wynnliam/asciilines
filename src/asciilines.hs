@@ -2,9 +2,14 @@ import System.Environment
 import System.IO
 import System.Exit
 import Data.String
+import Text.Read
 
-data CanvasRow = CanvasRow [Char]
-data Canvas = Canvas Integer Integer [CanvasRow]
+data CanvasDim = CanvasDim Integer Integer
+
+data Orientation = Horizontal | Vertical
+data Line = Line Orientation Integer
+data Command = Command Integer Integer Line
+data TvgData = TvgData CanvasDim [Command]
 
 -- For now, we shall only handle the case of empty argument list.
 main = getArgs >>= parseArgs
@@ -36,17 +41,10 @@ verifyFileName file
     | otherwise = Nothing
 
 -- TODO: Hammer this out some more
-renderCanvasFromFile Nothing     = putStrLn "The file you supplied is not a tvg file. Please update the extension to be one."
-renderCanvasFromFile (Just file) = (loadTvgContents file) >>= parseTvgContents
+renderCanvasFromFile Nothing         = putStrLn "The file you supplied is not a tvg file. Please update the extension to be one."
+renderCanvasFromFile (Just file)     = (getTvgCommands file) >>= tempPrint
 
--- Returns every line of the TVG file in a list
-loadTvgContents :: String -> IO [String]
-loadTvgContents file = fmap lines (readFile file)
+getTvgCommands file = readFile file
 
-parseTvgContents [] = putStrLn "Empty file!"
-parseTvgContents (canvasDimStr : commands)
-    | validCanvasDimStr (words canvasDimStr) == False = putStrLn "Bad canvas arguments. The format is \"A B\" where A and B are non-zero integers."
-    | otherwise = putStrLn "Have sex"
-
-validCanvasDimStr [a, b] = True
-validCanvasDimStr _ = False
+tempPrint :: [String] -> IO ()
+tempPrint commands = putStrLn (show commands)
