@@ -3,7 +3,7 @@ import System.IO
 import System.Exit
 import Data.String
 
-data CanvasRow = CanvasRow [Integer]
+data CanvasRow = CanvasRow [Char]
 data Canvas = Canvas Integer Integer [CanvasRow]
 
 -- For now, we shall only handle the case of empty argument list.
@@ -19,6 +19,7 @@ parseArgs :: [String] -> IO a
 -- exitSuccess is independent of printUsage, we ignore printUsage's result (which
 -- is () because printUsage prints to standard IO and quits).
 parseArgs []  = printUsage >> exitSuccess
+-- TODO: Finish me!
 parseArgs [file] = renderCanvas (verifyFileName file) >> exitSuccess
 
 printUsage = putStrLn "No files given. Please run as ./asciilines file.tvg"
