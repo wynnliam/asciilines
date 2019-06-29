@@ -4,12 +4,12 @@ import System.Exit
 import Data.String
 import Text.Read
 
-data CanvasDim = CanvasDim Integer Integer
+data CanvasDim = CanvasDim Integer Integer deriving (Show)
 
-data Orientation = Horizontal | Vertical
-data Line = Line Orientation Integer
-data Command = Command Integer Integer Line
-data TvgData = TvgData CanvasDim [Command]
+data Orientation = Horizontal | Vertical deriving (Show, Read)
+data Line = Line Orientation Integer deriving (Show, Read)
+data Command = Command Char Integer Integer Line deriving (Show, Read)
+data TvgData = TvgData CanvasDim [Command] deriving (Show)
 
 -- For now, we shall only handle the case of empty argument list.
 main = getArgs >>= parseArgs
@@ -42,9 +42,33 @@ verifyFileName file
 
 -- TODO: Hammer this out some more
 renderCanvasFromFile Nothing         = putStrLn "The file you supplied is not a tvg file. Please update the extension to be one."
-renderCanvasFromFile (Just file)     = (getTvgCommands file) >>= tempPrint
+--renderCanvasFromFile (Just file)     = (getTvgCommands file) >>= tempPrint
+renderCanvasFromFile (Just file)     = putStrLn "File"
 
-getTvgCommands file = readFile file
+getTvgCommands file = fmap lines (readFile file)
+
+parseTvgContents :: [String] -> TvgData
+parseTvgContents (x : xs) = TvgData (buildCanvasDims x) []
+
+buildCanvasDims :: String -> CanvasDim
+buildCanvasDims line = CanvasDim (head nums) ((head . tail) nums)
+    where nums = map (read::String->Integer) (words line)
+
+-- Converts a line that looks like "symbol num num h/v num" to
+-- "Command 'symbol' num num (Line Horizontal/Vertical num)"
+-- so we can use the read function
+convertCommandToReadable :: String -> String
+--convertCommandToReadable line = (tokens!!0) ++ (tokens!!1) ++ (tokens!!2) ++ (orientation (tokens!!3)) ++ (tokens!!4)
+convertCommandToReadable line = "Command " ++ symbol ++ " " ++ row ++ " " ++ col ++ " " ++ "(Line " ++ lineOrientation ++ " " ++ lineLength ++ ")"
+    where symbol = "'" ++ (tokens!!0) ++ "'"
+          row = tokens!!1
+          col = tokens!!2
+          lineOrientation = orientation (tokens!!3)
+          lineLength = tokens!!4
+          tokens = words line
+
+orientation "h" = "Horizontal"
+orientation "v" = "Vertical"
 
 tempPrint :: [String] -> IO ()
 tempPrint commands = putStrLn (show commands)
