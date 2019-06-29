@@ -4,12 +4,18 @@ import System.Exit
 import Data.String
 import Text.Read
 
-data CanvasDim = CanvasDim Integer Integer deriving (Show)
+data CanvasDim = CanvasDim Int Int deriving (Show)
 
 data Orientation = Horizontal | Vertical deriving (Show, Read)
 data Line = Line Orientation Integer deriving (Show, Read)
 data Command = Command Char Integer Integer Line deriving (Show, Read)
 data TvgData = TvgData CanvasDim [Command] deriving (Show)
+
+data Canvas = Canvas CanvasDim [[Char]] deriving (Show)
+
+createCanvas :: CanvasDim -> Canvas
+createCanvas (CanvasDim rowSize colSize) = Canvas (CanvasDim rowSize colSize) canvas
+    where canvas = replicate rowSize (replicate colSize '.')
 
 -- For now, we shall only handle the case of empty argument list.
 main = getArgs >>= parseArgs
@@ -40,10 +46,9 @@ verifyFileName file
     -- Otherwise we return nothing.
     | otherwise = Nothing
 
--- TODO: Hammer this out some more
 renderCanvasFromFile Nothing         = putStrLn "The file you supplied is not a tvg file. Please update the extension to be one."
 --renderCanvasFromFile (Just file)     = (getTvgCommands file) >>= tempPrint
-renderCanvasFromFile (Just file)     = putStrLn "File"
+renderCanvasFromFile (Just file)     = (getTvgCommands file) >>= tempPrint
 
 getTvgCommands file = fmap parseTvgContents (fmap lines (readFile file))
 
@@ -52,7 +57,7 @@ parseTvgContents (x : xs) = TvgData (buildCanvasDims x) (parseTvgCommands xs)
 
 buildCanvasDims :: String -> CanvasDim
 buildCanvasDims line = CanvasDim (head nums) ((head . tail) nums)
-    where nums = map (read::String->Integer) (words line)
+    where nums = map (read::String->Int) (words line)
 
 parseTvgCommands :: [String] -> [Command]
 parseTvgCommands commandStrs = map ((read::String->Command).convertCommandToReadable) commandStrs
@@ -61,7 +66,6 @@ parseTvgCommands commandStrs = map ((read::String->Command).convertCommandToRead
 -- "Command 'symbol' num num (Line Horizontal/Vertical num)"
 -- so we can use the read function
 convertCommandToReadable :: String -> String
---convertCommandToReadable line = (tokens!!0) ++ (tokens!!1) ++ (tokens!!2) ++ (orientation (tokens!!3)) ++ (tokens!!4)
 convertCommandToReadable line = "Command " ++ symbol ++ " " ++ row ++ " " ++ col ++ " " ++ "(Line " ++ lineOrientation ++ " " ++ lineLength ++ ")"
     where symbol = "'" ++ (tokens!!0) ++ "'"
           row = tokens!!1
@@ -73,5 +77,5 @@ convertCommandToReadable line = "Command " ++ symbol ++ " " ++ row ++ " " ++ col
 orientation "h" = "Horizontal"
 orientation "v" = "Vertical"
 
-tempPrint :: [String] -> IO ()
-tempPrint commands = putStrLn (show commands)
+tempPrint :: TvgData -> IO ()
+tempPrint tvgData = putStrLn (show tvgData)
