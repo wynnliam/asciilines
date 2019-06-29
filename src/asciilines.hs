@@ -11,11 +11,24 @@ data Line = Line Orientation Integer deriving (Show, Read)
 data Command = Command Char Integer Integer Line deriving (Show, Read)
 data TvgData = TvgData CanvasDim [Command] deriving (Show)
 
-data Canvas = Canvas CanvasDim [[Char]] deriving (Show)
+data Canvas = Canvas CanvasDim [[Char]]
+
+instance Show Canvas where
+    show (Canvas _ canvas) = unlines canvas
 
 createCanvas :: CanvasDim -> Canvas
 createCanvas (CanvasDim rowSize colSize) = Canvas (CanvasDim rowSize colSize) canvas
     where canvas = replicate rowSize (replicate colSize '.')
+
+
+drawSymbolOnRow :: [Char] -> Char -> Int -> [Char]
+drawSymbolOnRow row symbol col 
+    | col < 0 = row
+    | col >= (length row) = row
+    | otherwise = fstHalf ++ sndHalf
+        where fstHalf = fst splitRow
+              sndHalf = [symbol] ++ (tail . snd) splitRow
+              splitRow = splitAt col row
 
 -- For now, we shall only handle the case of empty argument list.
 main = getArgs >>= parseArgs
