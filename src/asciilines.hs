@@ -20,15 +20,17 @@ createCanvas :: CanvasDim -> Canvas
 createCanvas (CanvasDim rowSize colSize) = Canvas (CanvasDim rowSize colSize) canvas
     where canvas = replicate rowSize (replicate colSize '.')
 
-
-drawSymbolOnRow :: [Char] -> Char -> Int -> [Char]
-drawSymbolOnRow row symbol col 
+drawSymbolOnRow :: Char -> Int -> [Char] -> [Char]
+drawSymbolOnRow symbol col row
     | col < 0 = row
     | col >= (length row) = row
     | otherwise = fstHalf ++ sndHalf
         where fstHalf = fst splitRow
               sndHalf = [symbol] ++ (tail . snd) splitRow
               splitRow = splitAt col row
+
+drawVerticalLine :: Char -> Int -> [[Char]] -> [[Char]]
+drawVerticalLine symbol col canvas = map (drawSymbolOnRow symbol col) canvas
 
 -- For now, we shall only handle the case of empty argument list.
 main = getArgs >>= parseArgs
