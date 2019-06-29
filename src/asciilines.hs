@@ -32,6 +32,23 @@ drawSymbolOnRow symbol col row
 drawVerticalLine :: Char -> Int -> [[Char]] -> [[Char]]
 drawVerticalLine symbol col canvas = map (drawSymbolOnRow symbol col) canvas
 
+cutCanvas :: Int -> Int -> [String] -> ([String], ([String], [String]))
+cutCanvas start len canvas = (top, (cutCanvas, post))
+    where post = snd bottomSplit
+          cutCanvas = fst bottomSplit
+          bottomSplit =  splitAt len (snd splitCanvas)
+          top = fst splitCanvas
+          splitCanvas = splitAt start canvas
+
+drawVerticalCommand :: Char -> Int -> Int -> Int -> [[Char]] -> [[Char]]
+drawVerticalCommand symbol row col len canvas 
+        | row < 0 = drawVerticalCommand symbol (row + 1) col (len - 1) canvas
+        | otherwise = pre ++ commandResult ++ post
+    where pre = fst cut
+          commandResult = drawVerticalLine symbol col ((fst . snd) cut)
+          post = (snd . snd) cut
+          cut = cutCanvas row len canvas
+
 -- For now, we shall only handle the case of empty argument list.
 main = getArgs >>= parseArgs
 
