@@ -42,6 +42,8 @@ cutCanvas start len canvas = (top, (cutCanvas, post))
 
 drawVerticalCommand :: Char -> Int -> Int -> Int -> [[Char]] -> [[Char]]
 drawVerticalCommand symbol row col len canvas 
+        -- Without this case, we get the incorrect result. This will adjust
+        -- The line to render in cases of being out of bounds.
         | row < 0 = drawVerticalCommand symbol (row + 1) col (len - 1) canvas
         | otherwise = pre ++ commandResult ++ post
     where pre = fst cut
