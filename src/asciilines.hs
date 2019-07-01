@@ -7,8 +7,8 @@ import Text.Read
 data CanvasDim = CanvasDim Int Int deriving (Show)
 
 data Orientation = Horizontal | Vertical deriving (Show, Read)
-data Line = Line Orientation Integer deriving (Show, Read)
-data Command = Command Char Integer Integer Line deriving (Show, Read)
+data Line = Line Orientation Int deriving (Show, Read)
+data Command = Command Char Int Int Line deriving (Show, Read)
 data TvgData = TvgData CanvasDim [Command] deriving (Show)
 
 data Canvas = Canvas CanvasDim [[Char]]
@@ -137,6 +137,14 @@ convertCommandToReadable line = "Command " ++ symbol ++ " " ++ row ++ " " ++ col
 
 orientation "h" = "Horizontal"
 orientation "v" = "Vertical"
+
+executeCommands :: Canvas -> [Command] -> Canvas
+executeCommands canvas [] = canvas
+executeCommands canvas (c : cs) = executeCommands (executeCommand c canvas) cs
+
+executeCommand :: Command -> Canvas -> Canvas
+executeCommand (Command sym row col (Line Horizontal len)) (Canvas dimensions renderable) = (Canvas dimensions (drawHorizontalCommand sym row col len renderable))
+executeCommand (Command sym row col (Line Vertical len)) (Canvas dimensions renderable) = (Canvas dimensions (drawVerticalCommand sym row col len renderable))
 
 tempPrint :: TvgData -> IO ()
 tempPrint tvgData = putStrLn (show tvgData)
