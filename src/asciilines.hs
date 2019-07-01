@@ -32,11 +32,8 @@ drawSymbolOnRow symbol col row
 drawVerticalLine :: Char -> Int -> [[Char]] -> [[Char]]
 drawVerticalLine symbol col canvas = map (drawSymbolOnRow symbol col) canvas
 
-replaceChar :: Char -> Char -> Char
-replaceChar by from = by
-
 drawHorizontalLine :: Char -> String -> String
-drawHorizontalLine symbol canvas = map (replaceChar symbol) canvas
+drawHorizontalLine symbol canvas = map (\c -> symbol) canvas
 
 cutCanvasRow :: Int -> Int -> String -> (String, (String, String))
 cutCanvasRow start len canvasRow = (top, (cutArea, bottom))
@@ -68,6 +65,18 @@ drawVerticalCommand symbol row col len canvas
           commandResult = drawVerticalLine symbol col ((fst . snd) cut)
           post = (snd . snd) cut
           cut = cutCanvas row len canvas
+
+drawHorizontalCommand :: Char -> Int -> Int -> Int -> [[Char]] -> [[Char]]
+drawHorizontalCommand symbol row col len canvas 
+    | (row < 0) || (row >= (length canvas)) = canvas
+    | col < 0 = drawHorizontalCommand symbol row (col + 1) (len - 1) canvas
+    | otherwise = pre ++ commandResult ++ post
+        where pre = fst canvasButCut
+              canvasRowButCut = cutCanvasRow col len ((head . fst . snd) canvasButCut)
+              rowDrawResult = drawHorizontalLine symbol ((fst . snd) canvasRowButCut)
+              commandResult = [(fst canvasRowButCut) ++ rowDrawResult ++ ((snd . snd) canvasRowButCut)]
+              post = (snd . snd) canvasButCut
+              canvasButCut = cutCanvas row 1 canvas
 
 -- For now, we shall only handle the case of empty argument list.
 main = getArgs >>= parseArgs
