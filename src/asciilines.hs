@@ -32,6 +32,20 @@ drawSymbolOnRow symbol col row
 drawVerticalLine :: Char -> Int -> [[Char]] -> [[Char]]
 drawVerticalLine symbol col canvas = map (drawSymbolOnRow symbol col) canvas
 
+replaceChar :: Char -> Char -> Char
+replaceChar by from = by
+
+drawHorizontalLine :: Char -> String -> String
+drawHorizontalLine symbol canvas = map (replaceChar symbol) canvas
+
+cutCanvasRow :: Int -> Int -> String -> (String, (String, String))
+cutCanvasRow start len canvasRow = (top, (cutArea, bottom))
+    where top = fst splitRow
+          cutArea = fst splitLowerHalf
+          bottom = snd splitLowerHalf
+          splitLowerHalf = splitAt len (snd splitRow)
+          splitRow = splitAt start canvasRow
+
 cutCanvas :: Int -> Int -> [String] -> ([String], ([String], [String]))
 cutCanvas start len canvas = (top, (cutCanvas, post))
     where post = snd bottomSplit
@@ -40,6 +54,10 @@ cutCanvas start len canvas = (top, (cutCanvas, post))
           top = fst splitCanvas
           splitCanvas = splitAt start canvas
 
+-- drawVerticalLine will draw a whole line across a given canvas.
+-- This function is responsible for finding the "sub"canvas that
+-- a vertical line command is responsible for and then using drawVerticalLine
+-- to draw it.
 drawVerticalCommand :: Char -> Int -> Int -> Int -> [[Char]] -> [[Char]]
 drawVerticalCommand symbol row col len canvas 
         -- Without this case, we get the incorrect result. This will adjust
