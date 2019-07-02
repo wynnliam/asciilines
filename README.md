@@ -26,7 +26,6 @@ as intended, or the test script itself failed.
 
 # Issue Summary
 - Running the command `make run` does not work.
-- Supplied tests do not give correct output
 
 # License
 This program is licensed uder the "MIT License". Please see the `LICENSE` in the source distribution
