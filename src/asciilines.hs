@@ -108,8 +108,7 @@ verifyFileName file
     | otherwise = Nothing
 
 renderCanvasFromFile Nothing         = putStrLn "The file you supplied is not a tvg file. Please update the extension to be one."
---renderCanvasFromFile (Just file)     = (getTvgCommands file) >>= tempPrint
-renderCanvasFromFile (Just file)     = (getTvgCommands file) >>= tempPrint
+renderCanvasFromFile (Just file)     = (getTvgCommands file) >>= drawCanvasToScreen
 
 getTvgCommands file = fmap parseTvgContents (fmap lines (readFile file))
 
@@ -146,5 +145,5 @@ executeCommand :: Command -> Canvas -> Canvas
 executeCommand (Command sym row col (Line Horizontal len)) (Canvas dimensions renderable) = (Canvas dimensions (drawHorizontalCommand sym row col len renderable))
 executeCommand (Command sym row col (Line Vertical len)) (Canvas dimensions renderable) = (Canvas dimensions (drawVerticalCommand sym row col len renderable))
 
-tempPrint :: TvgData -> IO ()
-tempPrint tvgData = putStrLn (show tvgData)
+drawCanvasToScreen :: TvgData -> IO ()
+drawCanvasToScreen (TvgData canvasDims commands)  = putStrLn (show (executeCommands (createCanvas canvasDims) commands))
