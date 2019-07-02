@@ -1,6 +1,6 @@
 #!/bin/bash
 
-diff <(./bin/asciilines ./tests/supplied_tests/1/test1.svg) ./tests/supplied_tests/1/test1.out
+diff <(./bin/asciilines ./tests/supplied_tests/1/test1.tvg) ./tests/supplied_tests/1/test1.out
 # The return code of the previous arg is $? For readability
 # we put this in a variable result
 result=$?
