@@ -146,4 +146,4 @@ executeCommand (Command sym row col (Line Horizontal len)) (Canvas dimensions re
 executeCommand (Command sym row col (Line Vertical len)) (Canvas dimensions renderable) = (Canvas dimensions (drawVerticalCommand sym row col len renderable))
 
 drawCanvasToScreen :: TvgData -> IO ()
-drawCanvasToScreen (TvgData canvasDims commands)  = putStrLn (show (executeCommands (createCanvas canvasDims) commands))
+drawCanvasToScreen (TvgData canvasDims commands)  = putStr (show (executeCommands (createCanvas canvasDims) commands))
